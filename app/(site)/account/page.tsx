@@ -1,23 +1,29 @@
 import Link from "next/link";
-import { desc, db, eq, inArray, orders, quotes, returnRequests } from "@/db";
+import { and, asc, desc, db, eq, inArray, isNull, orders, products, quotes, returnRequests, savedItems } from "@/db";
 import { formatAbn } from "@/core/abn";
 import { aud, dateShort, orderNo, quoteNo, returnNo } from "@/ui/format";
 import { Status } from "@/ui/Status";
 import { requireBusiness } from "@/lib/session";
+import { Garment } from "@/ui/Art";
+import { PullToRefresh } from "@/ui/ux/PullToRefresh";
+import { SaveButton } from "@/ui/ux/SaveButton";
+import { Stagger } from "@/ui/ux/Stagger";
 
 export const metadata = { title: "Account" };
 
-type Tab = "orders" | "quotes" | "returns";
+type Tab = "orders" | "quotes" | "returns" | "saved";
 
 export default async function Account({ searchParams }: { searchParams: Promise<{ tab?: string; welcome?: string; pending?: string; sent?: string }> }) {
   const sp = await searchParams;
-  const tab: Tab = sp.tab === "quotes" || sp.tab === "returns" ? sp.tab : "orders";
+  const tab: Tab = sp.tab === "quotes" || sp.tab === "returns" || sp.tab === "saved" ? sp.tab : "orders";
   const user = await requireBusiness();
   const b = user.business;
 
-  const [myOrders, myQuotes] = await Promise.all([
+  const [myOrders, myQuotes, mySaved] = await Promise.all([
     db.query.orders.findMany({ where: eq(orders.businessId, b.id), orderBy: desc(orders.createdAt) }),
     db.query.quotes.findMany({ where: eq(quotes.businessId, b.id), orderBy: desc(quotes.createdAt) }),
+    db.select({ p: products }).from(savedItems).innerJoin(products, eq(products.id, savedItems.itemId))
+      .where(and(eq(savedItems.userId, user.id), isNull(products.archivedAt))).orderBy(desc(savedItems.createdAt), asc(products.sortOrder)),
   ]);
   const myReturns = myOrders.length
     ? await db.query.returnRequests.findMany({ where: inArray(returnRequests.orderId, myOrders.map((o) => o.id)), orderBy: desc(returnRequests.createdAt), with: { order: true } })
@@ -25,6 +31,7 @@ export default async function Account({ searchParams }: { searchParams: Promise<
   const returnable = myOrders.filter((o) => o.fulfilment === "SHIPPED" || o.fulfilment === "DELIVERED");
 
   return (
+    <PullToRefresh>
     <div className="stack">
       {sp.welcome && <p className="note ok">Application received. We&apos;ll email you when your trade account is approved.</p>}
       {b.status === "PENDING" && !sp.welcome && <p className="note warn">Your trade account is under review. You can send enquiries now; ordering opens once it&apos;s approved.</p>}
@@ -40,7 +47,7 @@ export default async function Account({ searchParams }: { searchParams: Promise<
       </div>
 
       <nav className="tabs" aria-label="Account sections">
-        {([["orders", "Orders", myOrders.length], ["quotes", "Quotes & enquiries", myQuotes.length], ["returns", "Returns", myReturns.length]] as const).map(([k, l, n]) => (
+        {([["orders", "Orders", myOrders.length], ["quotes", "Quotes & enquiries", myQuotes.length], ["returns", "Returns", myReturns.length], ["saved", "Saved", mySaved.length]] as const).map(([k, l, n]) => (
           <Link key={k} className="tab" href={`/account?tab=${k}`} aria-current={tab === k ? "page" : undefined}>{l}<span className="count">{n}</span></Link>
         ))}
       </nav>
@@ -98,6 +105,23 @@ export default async function Account({ searchParams }: { searchParams: Promise<
           )}
         </div>
       )}
+
+      {tab === "saved" && (mySaved.length === 0
+        ? <div className="empty">Nothing saved yet. Tap the heart on any style to keep it here. <Link href="/catalogue">Browse the catalogue</Link>.</div>
+        : (
+          <Stagger id="saved" className="cat">
+            {mySaved.map(({ p }) => (
+              <div className="card-wrap" key={p.id}>
+                <Link prefetch={false} className="prod prox" href={`/catalogue/${p.slug}`}>
+                  <Garment category={p.category} hue={p.hue} imageUrl={p.imageUrl} alt={p.name} vt={`p-${p.slug}`} />
+                  <span className="prod-meta"><span className="prod-name">{p.name}</span><span className="prod-cat">{p.category}</span></span>
+                </Link>
+                <SaveButton itemId={p.id} name={p.name} initial />
+              </div>
+            ))}
+          </Stagger>
+        ))}
     </div>
+    </PullToRefresh>
   );
 }

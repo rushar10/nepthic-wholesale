@@ -47,8 +47,8 @@ export default async function Returns({ searchParams }: { searchParams: Promise<
                 <input type="hidden" name="returnId" value={r.id} />
                 <label className="f">Note to buyer<input type="text" name="note" placeholder="Optional. A standard note is sent if left blank." /></label>
                 <div className="row">
-                  <Submit className="btn btn-ok" name="decision" value="APPROVED" swipe="approve" pendingText="Saving…">Approve return</Submit>
-                  <Submit className="btn btn-bad" name="decision" value="REJECTED" swipe="reject" pendingText="Saving…">Reject</Submit>
+                  <Submit className="btn btn-ok" name="decision" value="APPROVED" swipe="approve" optimistic="Approved" pendingText="Saving…">Approve return</Submit>
+                  <Submit className="btn btn-bad" name="decision" value="REJECTED" swipe="reject" optimistic="Rejected" pendingText="Saving…">Reject</Submit>
                 </div>
               </ActionForm>
             ) : <p className="small dim">Waiting for an admin to decide.</p>)}
@@ -57,7 +57,7 @@ export default async function Returns({ searchParams }: { searchParams: Promise<
               <ActionForm action={completeReturn} className="row">
                 <input type="hidden" name="returnId" value={r.id} />
                 <label className="f" style={{ width: 180 }}>Refund ($, optional)<input type="number" name="refund" step="0.01" min="0" placeholder="0.00" /></label>
-                <Submit className="btn btn-sm prox" pendingText="Closing…">Goods received · close return</Submit>
+                <Submit className="btn btn-sm prox" optimistic="Closed" pendingText="Closing…">Goods received · close return</Submit>
               </ActionForm>
             )}
             {r.decisionNote && r.status !== "PENDING" && <p className="note small">{r.decisionNote}</p>}

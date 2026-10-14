@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import { Icon } from "./Icons";
+import { CartBadge } from "./ux/CartBadge";
 
 /* ---------------------------------------------------------------------------
    Mobile chrome shared by every site: hide-on-scroll header, slide-out menu,
@@ -34,7 +35,7 @@ export function HeaderScroll() {
   return null;
 }
 
-export type NavItem = { href: string; label: string; icon: string; badge?: number; match?: string[] };
+export type NavItem = { href: string; label: string; icon: string; badge?: number; match?: string[]; cart?: boolean };
 
 function isActive(path: string, item: NavItem) {
   const targets = [item.href, ...(item.match ?? [])];
@@ -49,7 +50,10 @@ export function BottomNav({ items, label = "Main" }: { items: NavItem[]; label?:
     <nav className="bottom-nav" aria-label={label}>
       {items.map((i) => (
         <a key={i.href} href={i.href} aria-current={best === i.href ? "page" : undefined}>
-          <span className="bn-icon"><Icon name={i.icon} />{!!i.badge && <span className="bn-badge">{i.badge}</span>}</span>
+          <span className="bn-icon" data-cart-target={i.cart || undefined}>
+            <Icon name={i.icon} filled={best === i.href} />
+            {i.cart ? <CartBadge initial={i.badge ?? 0} /> : !!i.badge && <span className="bn-badge">{i.badge}</span>}
+          </span>
           <span className="bn-label">{i.label}</span>
         </a>
       ))}

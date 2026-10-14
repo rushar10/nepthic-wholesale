@@ -2,6 +2,7 @@ import { businesses, db, desc } from "@/db";
 import { formatAbn } from "@/core/abn";
 import { dateShort } from "@/ui/format";
 import { Status } from "@/ui/Status";
+import { QuickAction } from "@/ui/ux/QuickAction";
 import { guard } from "@/lib/admin/guard";
 import { setBusinessStatus, setBusinessTerms } from "@/lib/admin/actions/wholesale";
 
@@ -26,8 +27,8 @@ export default async function Businesses() {
       <td>
         {admin ? (
           <div className="row" style={{ flexWrap: "nowrap" }}>
-            {b.status !== "APPROVED" && <form action={setBusinessStatus}><input type="hidden" name="businessId" value={b.id} /><input type="hidden" name="status" value="APPROVED" /><button className="btn btn-sm btn-ok">Approve</button></form>}
-            {b.status === "PENDING" && <form action={setBusinessStatus}><input type="hidden" name="businessId" value={b.id} /><input type="hidden" name="status" value="REJECTED" /><button className="btn btn-sm btn-bad">Reject</button></form>}
+            {b.status !== "APPROVED" && <QuickAction action={setBusinessStatus} fields={{ businessId: b.id, status: "APPROVED" }} done={`${b.tradingName} approved`} className="btn btn-sm btn-ok">Approve</QuickAction>}
+            {b.status === "PENDING" && <QuickAction action={setBusinessStatus} fields={{ businessId: b.id, status: "REJECTED" }} done="Application declined" className="btn btn-sm btn-bad">Reject</QuickAction>}
             {b.status === "APPROVED" && (
               <form action={setBusinessTerms} className="row" style={{ flexWrap: "nowrap" }}>
                 <input type="hidden" name="businessId" value={b.id} />

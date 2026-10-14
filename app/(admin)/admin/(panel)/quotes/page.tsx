@@ -57,8 +57,8 @@ export default async function Quotes({ searchParams }: { searchParams: Promise<{
                   <label className="f full">{q.type === "QUOTE" ? "Message to buyer" : "Reply"}<textarea name="reply" placeholder={q.type === "QUOTE" ? "What's included, lead time, freight." : "Your answer"} /></label>
                 </div>
                 <div className="row">
-                  <Submit className="btn btn-primary btn-sm prox" name="decision" value="send" pendingText="Sending…">{q.type === "QUOTE" ? `Send quote (valid ${s.quoteValidDays} days)` : "Send reply"}</Submit>
-                  <Submit className="btn btn-bad btn-sm" name="decision" value="decline" pendingText="Declining…">Decline</Submit>
+                  <Submit className="btn btn-primary btn-sm prox" name="decision" value="send" optimistic="Sent" pendingText="Sending…">{q.type === "QUOTE" ? `Send quote (valid ${s.quoteValidDays} days)` : "Send reply"}</Submit>
+                  <Submit className="btn btn-bad btn-sm" name="decision" value="decline" optimistic="Declined" pendingText="Declining…">Decline</Submit>
                 </div>
               </ActionForm>
             ) : (

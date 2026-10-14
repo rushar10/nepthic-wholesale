@@ -33,7 +33,7 @@ export async function setLine(_: FormState, fd: FormData): Promise<FormState> {
   }
   await writeCart(cart);
   revalidatePath("/", "layout");
-  redirect("/order");
+  return { ok: units > 0 ? `${units} × ${product.name} in your order` : `${product.name} removed from your order` };
 }
 
 export async function removeProduct(fd: FormData) {

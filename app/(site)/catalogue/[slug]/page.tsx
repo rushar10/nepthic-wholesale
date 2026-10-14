@@ -7,6 +7,8 @@ import { aud } from "@/ui/format";
 import { Garment } from "@/ui/Art";
 import { readCart } from "@/lib/cart";
 import { BulkBuilder } from "./BulkBuilder";
+import { SaveButton } from "@/ui/ux/SaveButton";
+import { savedIds } from "@/lib/saved";
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -15,7 +17,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     with: { variants: { orderBy: asc(variants.sortOrder) } },
   });
   if (!p) notFound();
-  const [user, settings, tiers, cart] = await Promise.all([getUser(), getSettings(), getTiers(), readCart()]);
+  const [user, settings, tiers, cart, saved] = await Promise.all([getUser(), getSettings(), getTiers(), readCart(), savedIds()]);
   const trade = isTradeApproved(user) && user?.role === "BUSINESS";
   const thisIds = new Set(p.variants.map((v) => v.id));
   const otherUnits = Object.entries(cart).filter(([id]) => !thisIds.has(id)).reduce((a, [, q]) => a + q, 0);
@@ -26,8 +28,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <Link className="btn btn-ghost btn-sm" href="/catalogue" style={{ justifySelf: "start" }}>← Catalogue</Link>
       <div className="split">
         <div className="stack">
-          <div className="prox" style={{ borderRadius: "var(--r)", overflow: "hidden" }}>
-            <Garment category={p.category} hue={p.hue} imageUrl={p.imageUrl} alt={p.name} />
+          <div className="prox card-wrap" style={{ borderRadius: "var(--r)", overflow: "hidden" }} data-fly-source>
+            <Garment category={p.category} hue={p.hue} imageUrl={p.imageUrl} alt={p.name} vt={`p-${p.slug}`} priority />
+            <SaveButton itemId={p.id} name={p.name} initial={saved.has(p.id)} />
           </div>
           <div className="stack-sm">
             <p className="eyebrow">{p.category}</p>
@@ -44,6 +47,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           {trade ? (
             <BulkBuilder
               productId={p.id}
+              name={p.name}
               rrpCents={p.priceCents}
               sizes={p.variants.map((v) => ({ id: v.id, size: v.size, stock: v.stock }))}
               initial={current}

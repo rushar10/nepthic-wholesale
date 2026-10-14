@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PullToRefresh } from "@/ui/ux/PullToRefresh";
 import { aud0, dateShort } from "@/ui/format";
 import { guard } from "@/lib/admin/guard";
 import { approvals, balancesDue, changePct, monthlyRevenue, recentActivity, revenueByStockist, salesToday, week } from "@/lib/admin/dashboard";
@@ -33,7 +34,7 @@ export default async function Overview() {
   ];
 
   return (
-    <>
+    <PullToRefresh>
       <div className="dash-head"><h1>Wholesale Dashboard</h1></div>
       <div className="dash-grid">
         <div className="dash-main">
@@ -98,6 +99,6 @@ export default async function Overview() {
           </div>
         </div>
       </div>
-    </>
+    </PullToRefresh>
   );
 }

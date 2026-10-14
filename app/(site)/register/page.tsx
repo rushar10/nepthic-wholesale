@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ActionForm, Submit } from "@/ui/Forms";
 import { registerBusiness } from "@/app/actions/auth";
+import { Field } from "@/ui/ux/Field";
+import { Wizard } from "@/ui/ux/Wizard";
 
 export const metadata = { title: "Apply for a trade account" };
 
@@ -14,25 +16,27 @@ export default function Register() {
         <h1 className="page">Apply to stock Nepthic</h1>
         <p className="lede">We review every application, usually within one business day. You&apos;ll see trade prices once approved.</p>
       </div>
-      <ActionForm action={registerBusiness} className="panel prox">
-        <h2 className="h3">Business</h2>
-        <div className="form-grid">
-          <label className="f">Legal name<input type="text" name="legalName" required autoComplete="organization" /></label>
-          <label className="f">Store or trading name<input type="text" name="tradingName" required /></label>
-          <label className="f">ABN<input type="text" name="abn" inputMode="numeric" placeholder="11 digits" required /></label>
-          <label className="f">Phone<input type="tel" name="phone" required autoComplete="tel" /></label>
-          <label className="f full">Street address<input type="text" name="address" required autoComplete="street-address" /></label>
-          <label className="f">Suburb or city<input type="text" name="city" required autoComplete="address-level2" /></label>
-          <label className="f">State<select name="state" defaultValue="QLD">{STATES.map((s) => <option key={s}>{s}</option>)}</select></label>
-          <label className="f">Postcode<input type="text" name="postcode" inputMode="numeric" maxLength={4} required autoComplete="postal-code" /></label>
-        </div>
-        <h2 className="h3">Your login</h2>
-        <div className="form-grid">
-          <label className="f">Your name<input type="text" name="name" required autoComplete="name" /></label>
-          <label className="f">Email<input type="email" name="email" required autoComplete="email" /></label>
-          <label className="f">Password<input type="password" name="password" minLength={10} required autoComplete="new-password" /></label>
-        </div>
-        <div className="row"><Submit pendingText="Submitting…">Submit application</Submit><span className="dim small">Already have one? <Link href="/login">Sign in</Link></span></div>
+      <ActionForm action={registerBusiness} className="panel prox" persist="register">
+        <Wizard steps={["Your business", "Address", "Your login"]} submit={<Submit pendingText="Submitting…">Submit application</Submit>}>
+          <div className="form-grid">
+            <Field label="Legal name" name="legalName" required autoComplete="organization" autoCapitalize="words" />
+            <Field label="Store or trading name" name="tradingName" required autoCapitalize="words" />
+            <Field label="ABN" name="abn" inputMode="numeric" required pattern="[0-9 ]{11,14}" patternMessage="An ABN is 11 digits, e.g. 51 824 753 556" hint="11 digits. We check it with ABN Lookup." />
+            <Field label="Phone" type="tel" name="phone" required autoComplete="tel" inputMode="tel" />
+          </div>
+          <div className="form-grid">
+            <Field full label="Street address" name="address" required autoComplete="street-address" />
+            <Field label="Suburb or city" name="city" required autoComplete="address-level2" autoCapitalize="words" />
+            <label className="fl"><select id="f-state" name="state" defaultValue="QLD" autoComplete="address-level1">{STATES.map((s) => <option key={s}>{s}</option>)}</select><span className="fl-label">State</span><span className="fl-msg" /></label>
+            <Field label="Postcode" name="postcode" inputMode="numeric" maxLength={4} pattern="[0-9]{4}" patternMessage="Postcodes are 4 digits" required autoComplete="postal-code" />
+          </div>
+          <div className="form-grid">
+            <Field label="Your name" name="name" required autoComplete="name" autoCapitalize="words" />
+            <Field label="Email" type="email" name="email" required autoComplete="email" inputMode="email" autoCapitalize="none" spellCheck={false} />
+            <Field label="Password" type="password" name="password" minLength={10} required autoComplete="new-password" hint="At least 10 characters" />
+            <p className="dim small full">Already have an account? <Link href="/login">Sign in</Link></p>
+          </div>
+        </Wizard>
       </ActionForm>
     </div>
   );

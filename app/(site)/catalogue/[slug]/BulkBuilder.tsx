@@ -1,17 +1,20 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ActionForm, Submit } from "@/ui/Forms";
 import { BottomSheet } from "@/ui/Mobile";
 import { aud } from "@/ui/format";
 import { nextTier, tierFor, tradeUnitCents, type Tier } from "@/core/pricing";
 import { setLine } from "@/app/actions/order";
+import { addPending, flyTo, rollback } from "@/ui/ux/cart";
+import { toast } from "@/ui/ux/toast";
+import { haptic } from "@/ui/ux/haptics";
 
 type Size = { id: string; size: string; stock: number };
 
 /* Size-by-quantity grid with +/− steppers and a running total pinned to the bottom of
    the screen on phones. Totals are live in the browser; the server re-prices on submit. */
-export function BulkBuilder({ productId, rrpCents, sizes, initial, otherUnits, tiers, moq }: {
-  productId: string; rrpCents: number; sizes: Size[]; initial: Record<string, number>;
+export function BulkBuilder({ productId, name, rrpCents, sizes, initial, otherUnits, tiers, moq }: {
+  productId: string; name: string; rrpCents: number; sizes: Size[]; initial: Record<string, number>;
   otherUnits: number; tiers: Tier[]; moq: number;
 }) {
   const hasExisting = Object.values(initial).some((q) => q > 0);
@@ -37,8 +40,31 @@ export function BulkBuilder({ productId, rrpCents, sizes, initial, otherUnits, t
     setPresets(false);
   };
 
+  /* Optimistic: the order badge moves and the garment flies to it straight away; if the
+     server refuses, the badge goes back and the reason shows under the form. */
+  const before = Object.values(initial).reduce((a, b) => a + b, 0);
+  const delta = useRef(0);
+  const send = () => {
+    delta.current = units - before;
+    addPending(delta.current);
+    if (units > 0) { flyTo(document.querySelector("[data-fly-source]")); haptic("success"); }
+  };
+  const done = (st: { error?: string; ok?: string } | undefined) => {
+    if (st?.error) { rollback(delta.current); return; }
+    if (!st?.ok) return;
+    const restore = new FormData();
+    restore.set("productId", productId);
+    for (const s of sizes) restore.set(`qty_${s.id}`, String(initial[s.id] ?? 0));
+    toast({
+      message: st.ok, tone: "ok",
+      action: before === 0 && units > 0
+        ? { label: "Undo", onClick: () => { addPending(-units); void setLine(undefined, restore).then((r) => { if (r?.error) { rollback(-units); toast({ message: r.error, tone: "bad" }); } else toast({ message: `${name} taken out of your order`, tone: "info" }); }); } }
+        : { label: "View order", href: "/order" },
+    });
+  };
+
   return (
-    <ActionForm action={setLine} className="stack-sm">
+    <ActionForm action={setLine} className="stack-sm" onSend={send} onDone={done} quiet>
       <input type="hidden" name="productId" value={productId} />
       <div className="spread">
         <div><p className="eyebrow">Size breakdown</p><p className="dim small" style={{ marginTop: 4 }}>Minimum {moq} for this style. Mix sizes freely.</p></div>

@@ -5,9 +5,12 @@ import { getSettings, getTiers } from "@/core/settings";
 import { tradeUnitCents } from "@/core/pricing";
 import { aud } from "@/ui/format";
 import { Garment } from "@/ui/Art";
+import { Stagger } from "@/ui/ux/Stagger";
+import { SaveButton } from "@/ui/ux/SaveButton";
+import { savedIds } from "@/lib/saved";
 
 export default async function Home() {
-  const [user, settings, tiers] = await Promise.all([getUser(), getSettings(), getTiers()]);
+  const [user, settings, tiers, saved] = await Promise.all([getUser(), getSettings(), getTiers(), savedIds()]);
   const trade = isTradeApproved(user);
   const featured = await db.query.products.findMany({ where: and(eq(products.wholesaleEnabled, true), isNull(products.archivedAt)), orderBy: asc(products.sortOrder), limit: 4 });
   const top = tiers.at(-1)?.discountPct ?? 0;
@@ -50,18 +53,21 @@ export default async function Home() {
 
       <section className="stack-sm">
         <div className="spread"><h2>Core range</h2><Link className="link" href="/catalogue">See everything</Link></div>
-        <div className="cat">
-          {featured.map((p) => (
-            <Link key={p.id} className="prod prox" href={`/catalogue/${p.slug}`}>
-              <Garment category={p.category} hue={p.hue} imageUrl={p.imageUrl} alt={p.name} />
+        <Stagger id="core" className="cat">
+          {featured.map((p, i) => (
+            <div className="card-wrap" key={p.id}>
+            <Link prefetch={false} className="prod prox" href={`/catalogue/${p.slug}`}>
+              <Garment category={p.category} hue={p.hue} imageUrl={p.imageUrl} alt={p.name} vt={`p-${p.slug}`} priority={i < 2} />
               <span className="prod-meta"><span className="prod-name">{p.name}</span><span className="prod-cat">{p.category}</span></span>
               <span className="prod-price">
                 {trade ? <span>Trade from <span className="mono">{aud(tradeUnitCents(p.priceCents, top))}</span></span> : <span />}
                 <span className="dim">RRP {aud(p.priceCents)}</span>
               </span>
             </Link>
+            <SaveButton itemId={p.id} name={p.name} initial={saved.has(p.id)} />
+            </div>
           ))}
-        </div>
+        </Stagger>
       </section>
     </div>
   );
