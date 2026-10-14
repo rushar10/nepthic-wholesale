@@ -46,7 +46,7 @@ export const emails = {
   newQuoteForTeam: (n: number, business: string) =>
     env.adminNotifyEmail &&
     sendEmail(env.adminNotifyEmail, `New wholesale request Q-${n} from ${business}`,
-      layout("New wholesale request", p(`${esc(business)} sent Q-${n}.`), { label: "Open in Wholesale admin", href: `${env.siteUrl}/admin/quotes` })),
+      layout("New wholesale request", p(`${esc(business)} sent Q-${n}.`), { label: "Open in the Admin Portal", href: `${env.portalUrl}/wholesale/quotes` })),
 
   quoteSent: (to: string, n: number, amountCents: number, terms: string, reply: string, quoteId: string) =>
     sendEmail(to, `Your Nepthic quote Q-${n}: ${aud(amountCents)}`,

@@ -68,7 +68,6 @@ export async function loginWithPassword(email: string, password: string) {
   return user;
 }
 
-export const STAFF_ROLES: Role[] = ["STAFF", "ADMIN"];
-export const isAdmin = (u: { role: Role } | null | undefined) => u?.role === "ADMIN";
-export const isTradeApproved = (u: SessionUser | null) =>
-  !!u && ((u.role === "BUSINESS" && u.business?.status === "APPROVED") || STAFF_ROLES.includes(u.role));
+/* Every account on this site is a trade buyer. Nepthic staff use the separate Admin Portal,
+   which has its own accounts; there is no staff or admin login here. */
+export const isTradeApproved = (u: SessionUser | null) => !!u && u.role === "BUSINESS" && u.business?.status === "APPROVED";

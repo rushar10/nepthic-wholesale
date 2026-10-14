@@ -33,7 +33,7 @@ export async function submitReturn(_: FormState, fd: FormData): Promise<FormStat
   await emails.returnReceived(user.email, r.number);
   if (env.adminNotifyEmail) {
     await sendEmail(env.adminNotifyEmail, `Return ${returnNo(r.number)} from ${user.business.tradingName}`,
-      `<p>${reason}: ${units} units.</p><p><a href="${env.siteUrl}/admin/returns">Review in Wholesale admin</a></p>`);
+      `<p>${reason}: ${units} units.</p><p><a href="${env.portalUrl}/wholesale/returns">Review in the Nepthic Admin Portal</a></p>`);
   }
   redirect("/account?tab=returns&sent=1");
 }

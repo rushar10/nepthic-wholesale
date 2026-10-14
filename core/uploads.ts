@@ -1,6 +1,6 @@
 import sharp from "sharp";
 import { db, eq, uploads } from "@/db";
-import { getUser, STAFF_ROLES } from "./auth";
+import { getUser } from "./auth";
 
 /* Images are stored in Postgres so every app can serve them without shared disk.
    For high volume, swap this module for S3/R2 and keep the same function names. */
@@ -29,13 +29,14 @@ export async function saveImages(files: File[], userId: string | null, opts: { m
   return ids;
 }
 
-/** Body of GET /api/uploads/[id]. Public uploads (event imagery) are open; others need the owner or staff. */
+/** Body of GET /api/uploads/[id]. Public uploads are open; private ones (return photos) only to
+    their owner. The Admin Portal reads them through the admin API instead. */
 export async function serveUpload(id: string) {
   const u = await db.query.uploads.findFirst({ where: eq(uploads.id, id) });
   if (!u) return new Response("Not found", { status: 404 });
   if (!u.isPublic) {
     const user = await getUser();
-    const allowed = user && (STAFF_ROLES.includes(user.role) || user.id === u.userId);
+    const allowed = user && user.id === u.userId;
     if (!allowed) return new Response("Not found", { status: 404 });
   }
   return new Response(new Uint8Array(u.data), {

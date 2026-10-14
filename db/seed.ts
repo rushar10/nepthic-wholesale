@@ -51,12 +51,9 @@ async function main() {
     await db.update(products).set({ wholesaleEnabled: false }).where(eq(products.slug, "drop-07-tee"));
   }
 
-  const adminPassword = process.env.SEED_ADMIN_PASSWORD || "change-me-now";
-  await user(process.env.SEED_ADMIN_EMAIL || "admin@wholesale.nepthic.com", "Wholesale Admin", "ADMIN", adminPassword);
-
+  // No staff or admin accounts here: Nepthic staff sign in to the separate Admin Portal.
   // Demo accounts for local testing only.
   if (process.env.NODE_ENV !== "production") {
-    await user("staff@wholesale.nepthic.com", "Wholesale Staff", "STAFF", adminPassword);
     let biz = await db.query.businesses.findFirst({ where: eq(businesses.abn, "51824753556") });
     if (!biz) {
       [biz] = await db.insert(businesses).values({

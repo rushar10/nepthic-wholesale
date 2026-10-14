@@ -14,8 +14,8 @@ export const env = {
   siteUrl: (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3001").replace(/\/$/, ""),
   /** Where the Nepthic logo points: "/" (this site's home) unless set to the gateway. */
   logoHref: process.env.NEXT_PUBLIC_LOGO_HREF || "/",
-  /** Read-only summary API for the Nepthic Overview dashboard; empty = endpoint off. */
-  overviewToken: process.env.OVERVIEW_API_TOKEN ?? "",
+  /** The Nepthic Admin Portal (server-side only: team alert emails and the admin preview bar). */
+  portalUrl: (process.env.PORTAL_URL ?? "").replace(/\/$/, ""),
   /** Where the Clothing catalogue feed lives (https://… or file:…). Read by the scheduled import only. */
   catalogueUrl: process.env.CLOTHING_CATALOGUE_URL ?? "file:data/clothing-catalogue.sample.json",
   catalogueToken: process.env.CLOTHING_CATALOGUE_TOKEN ?? "",

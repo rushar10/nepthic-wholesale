@@ -60,7 +60,7 @@ export async function registerBusiness(_: FormState, fd: FormData): Promise<Form
   await audit(userId, "business.registered", "Business", abn);
   if (env.adminNotifyEmail) {
     await sendEmail(env.adminNotifyEmail, `New trade account: ${v.tradingName}`,
-      `<p>${v.tradingName} (ABN ${abn}) applied for a trade account.</p><p><a href="${env.siteUrl}/admin/businesses">Review in Wholesale admin</a></p>`);
+      `<p>${v.tradingName} (ABN ${abn}) applied for a trade account.</p><p><a href="${env.portalUrl}/wholesale/businesses">Review in the Nepthic Admin Portal</a></p>`);
   }
   await createSession(userId);
   redirect("/account?welcome=1");
