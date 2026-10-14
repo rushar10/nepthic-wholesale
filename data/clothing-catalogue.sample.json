@@ -1,0 +1,215 @@
+{
+  "version": 1,
+  "generatedAt": "2026-10-14T00:00:00Z",
+  "currency": "AUD",
+  "products": [
+    {
+      "id": "clo_1001",
+      "slug": "void-hoodie",
+      "name": "Void Hoodie",
+      "category": "Hoodies",
+      "description": "Void Hoodie from the Nepthic core range.",
+      "priceCents": 12900,
+      "imageUrl": null,
+      "active": true,
+      "sizes": [
+        {
+          "size": "S",
+          "sku": "VOID-HOODIE-S"
+        },
+        {
+          "size": "M",
+          "sku": "VOID-HOODIE-M"
+        },
+        {
+          "size": "L",
+          "sku": "VOID-HOODIE-L"
+        },
+        {
+          "size": "XL",
+          "sku": "VOID-HOODIE-XL"
+        },
+        {
+          "size": "XXL",
+          "sku": "VOID-HOODIE-XXL"
+        }
+      ]
+    },
+    {
+      "id": "clo_1002",
+      "slug": "orbit-tee",
+      "name": "Orbit Tee",
+      "category": "Tees",
+      "description": "Orbit Tee from the Nepthic core range.",
+      "priceCents": 5900,
+      "imageUrl": null,
+      "active": true,
+      "sizes": [
+        {
+          "size": "S",
+          "sku": "ORBIT-TEE-S"
+        },
+        {
+          "size": "M",
+          "sku": "ORBIT-TEE-M"
+        },
+        {
+          "size": "L",
+          "sku": "ORBIT-TEE-L"
+        },
+        {
+          "size": "XL",
+          "sku": "ORBIT-TEE-XL"
+        },
+        {
+          "size": "XXL",
+          "sku": "ORBIT-TEE-XXL"
+        }
+      ]
+    },
+    {
+      "id": "clo_1003",
+      "slug": "static-cargo-pant",
+      "name": "Static Cargo Pant",
+      "category": "Bottoms",
+      "description": "Static Cargo Pant from the Nepthic core range.",
+      "priceCents": 14900,
+      "imageUrl": null,
+      "active": true,
+      "sizes": [
+        {
+          "size": "28",
+          "sku": "STATIC-CARGO-PANT-28"
+        },
+        {
+          "size": "30",
+          "sku": "STATIC-CARGO-PANT-30"
+        },
+        {
+          "size": "32",
+          "sku": "STATIC-CARGO-PANT-32"
+        },
+        {
+          "size": "34",
+          "sku": "STATIC-CARGO-PANT-34"
+        },
+        {
+          "size": "36",
+          "sku": "STATIC-CARGO-PANT-36"
+        }
+      ]
+    },
+    {
+      "id": "clo_1004",
+      "slug": "eclipse-crewneck",
+      "name": "Eclipse Crewneck",
+      "category": "Crewnecks",
+      "description": "Eclipse Crewneck from the Nepthic core range.",
+      "priceCents": 10900,
+      "imageUrl": null,
+      "active": true,
+      "sizes": [
+        {
+          "size": "S",
+          "sku": "ECLIPSE-CREWNECK-S"
+        },
+        {
+          "size": "M",
+          "sku": "ECLIPSE-CREWNECK-M"
+        },
+        {
+          "size": "L",
+          "sku": "ECLIPSE-CREWNECK-L"
+        },
+        {
+          "size": "XL",
+          "sku": "ECLIPSE-CREWNECK-XL"
+        },
+        {
+          "size": "XXL",
+          "sku": "ECLIPSE-CREWNECK-XXL"
+        }
+      ]
+    },
+    {
+      "id": "clo_1005",
+      "slug": "drift-track-jacket",
+      "name": "Drift Track Jacket",
+      "category": "Outerwear",
+      "description": "Drift Track Jacket from the Nepthic core range.",
+      "priceCents": 16900,
+      "imageUrl": null,
+      "active": true,
+      "sizes": [
+        {
+          "size": "S",
+          "sku": "DRIFT-TRACK-JACKET-S"
+        },
+        {
+          "size": "M",
+          "sku": "DRIFT-TRACK-JACKET-M"
+        },
+        {
+          "size": "L",
+          "sku": "DRIFT-TRACK-JACKET-L"
+        },
+        {
+          "size": "XL",
+          "sku": "DRIFT-TRACK-JACKET-XL"
+        },
+        {
+          "size": "XXL",
+          "sku": "DRIFT-TRACK-JACKET-XXL"
+        }
+      ]
+    },
+    {
+      "id": "clo_1006",
+      "slug": "signal-cap",
+      "name": "Signal Cap",
+      "category": "Headwear",
+      "description": "Signal Cap from the Nepthic core range.",
+      "priceCents": 4500,
+      "imageUrl": null,
+      "active": true,
+      "sizes": [
+        {
+          "size": "OS",
+          "sku": "SIGNAL-CAP-OS"
+        }
+      ]
+    },
+    {
+      "id": "clo_1007",
+      "slug": "drop-07-tee",
+      "name": "Drop 07 Tee (limited)",
+      "category": "Tees",
+      "description": "Drop 07 Tee (limited) from the Nepthic core range.",
+      "priceCents": 7900,
+      "imageUrl": null,
+      "active": true,
+      "sizes": [
+        {
+          "size": "S",
+          "sku": "DROP-07-TEE-S"
+        },
+        {
+          "size": "M",
+          "sku": "DROP-07-TEE-M"
+        },
+        {
+          "size": "L",
+          "sku": "DROP-07-TEE-L"
+        },
+        {
+          "size": "XL",
+          "sku": "DROP-07-TEE-XL"
+        },
+        {
+          "size": "XXL",
+          "sku": "DROP-07-TEE-XXL"
+        }
+      ]
+    }
+  ]
+}
